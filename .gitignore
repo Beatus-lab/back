@@ -1,4 +1,7 @@
-# Byte-compiled / optimized / DLL files
+.env
+node_modules/
+/.pnp
+/.pnp.js# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
 *$py.class
