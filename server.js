@@ -17,6 +17,7 @@ const PORT = process.env.PORT || 4000
 const FRONT_URL = process.env.FRONT_URL || 'http://localhost:5173'
 const ALLOWED_DOMAINS = (process.env.ALLOWED_DOMAINS || '').split(',').map(s => s.trim()).filter(Boolean)
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || '').split(',').map(s => s.trim()).filter(Boolean)
+const isProduction = process.env.NODE_ENV === 'production'
 
 console.log('=== Server Config ===')
 console.log('PORT:', PORT)
@@ -45,6 +46,7 @@ app.use(cors({
   allowedHeaders: ['Content-Type'],
   maxAge: 86400
 }))
+console.log('[CORS] origin:', FRONT_URL)
 app.use(express.json())
 
 app.use(session({
@@ -52,7 +54,7 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
   cookie: {
-    secure: false,
+    secure: isProduction,
     sameSite: 'lax',
     httpOnly: true,
     maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
