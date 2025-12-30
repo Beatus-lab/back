@@ -26,6 +26,11 @@ console.log('ALLOWED_DOMAINS:', ALLOWED_DOMAINS)
 console.log('ADMIN_EMAILS:', ADMIN_EMAILS)
 console.log('====================')
 
+// Log Google callback config for debugging redirect_uri issues
+console.log('GOOGLE_CALLBACK_URL (env):', process.env.GOOGLE_CALLBACK_URL)
+const CALLBACK_URL = process.env.GOOGLE_CALLBACK_URL || `http://localhost:${PORT}/auth/google/callback`
+console.log('Using callbackURL:', CALLBACK_URL)
+
 const app = express()
 
 const DATA_FILE = process.env.DATA_FILE || 'applications.json'
@@ -70,7 +75,7 @@ passport.deserializeUser((obj, done) => done(null, obj))
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: process.env.GOOGLE_CALLBACK_URL || `http://localhost:${PORT}/auth/google/callback`
+  callbackURL: CALLBACK_URL
 }, (accessToken, refreshToken, profile, done) => {
   try {
     const email = profile.emails && profile.emails[0] && profile.emails[0].value
@@ -304,5 +309,7 @@ app.post('/auth/logout', (req, res, next) => {
 })
 
 app.listen(PORT, () => {
-  console.log(`Auth server listening on http://localhost:${PORT}`)
+  console.log(`Auth server listening on port ${PORT}`)
+  console.log(`FRONT_URL: ${FRONT_URL}`)
+  console.log(`NODE_ENV: ${process.env.NODE_ENV}`)
 })
