@@ -60,11 +60,13 @@ app.use(session({
   saveUninitialized: true,
   cookie: {
     secure: isProduction,
-    sameSite: 'lax',
+    // For cross-site requests (frontend on different domain), SameSite must be 'none' and Secure true
+    sameSite: isProduction ? 'none' : 'lax',
     httpOnly: true,
     maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
   }
 }))
+console.log('[SESSION] cookie.secure=', isProduction, ' cookie.sameSite=', isProduction ? 'none' : 'lax')
 
 app.use(passport.initialize())
 app.use(passport.session())
